@@ -5,18 +5,19 @@ from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
-# # Make sure required NLTK data is downloaded
-# nltk.download('punkt')
-# nltk.download('stopwords')
-# nltk.download('averaged_perceptron_tagger')
-# nltk.download('wordnet')
+# Download only if not found
+required_resources = {
+    'punkt': 'tokenizers/punkt',
+    'stopwords': 'corpora/stopwords',
+    'wordnet': 'corpora/wordnet',
+    'averaged_perceptron_tagger': 'taggers/averaged_perceptron_tagger'
+}
 
-for resource in ['punkt', 'stopwords', 'averaged_perceptron_tagger', 'wordnet']:
+for resource, path in required_resources.items():
     try:
-        nltk.data.find(f'tokenizers/{resource}' if resource == 'punkt' else f'corpora/{resource}')
+        nltk.data.find(path)
     except LookupError:
         nltk.download(resource)
-
 
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
