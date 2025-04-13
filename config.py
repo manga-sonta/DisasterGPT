@@ -1,0 +1,2 @@
+GROQ_API_KEY = "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"
+EMBED_MODEL_NAME = "all-MiniLM-L6-v2"
