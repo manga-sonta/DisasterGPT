@@ -3,32 +3,21 @@ import re
 from nltk import pos_tag
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize
 
-# === Ensure required NLTK resources are available (fixes punkt_tab bug) ===
-try:
-    nltk.data.find("tokenizers/punkt")
-except LookupError:
-    nltk.download("punkt")
+# === Ensure required NLTK resources ===
+nltk.download('punkt', quiet=True)
+nltk.download('stopwords', quiet=True)
+nltk.download('averaged_perceptron_tagger', quiet=True)
+nltk.download('wordnet', quiet=True)
 
-try:
-    nltk.data.find("corpora/stopwords")
-except LookupError:
-    nltk.download("stopwords")
+# === Force init: tokenize dummy sentence to warm up punkt ===
+_ = sent_tokenize("NLTK init test.")
 
-try:
-    nltk.data.find("taggers/averaged_perceptron_tagger")
-except LookupError:
-    nltk.download("averaged_perceptron_tagger")
-
-try:
-    nltk.data.find("corpora/wordnet")
-except LookupError:
-    nltk.download("wordnet")
-
-
+# === Init tools ===
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
+
 
 def wn_tagger(nltk_tag):
     if nltk_tag.startswith('J'):
