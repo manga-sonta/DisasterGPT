@@ -1,39 +1,33 @@
-import nltk
 import re
-from nltk import pos_tag
-from nltk.corpus import stopwords, wordnet
-from nltk.stem import WordNetLemmatizer
+import spacy
+from nltk.corpus import stopwords
 
-# No word_tokenize used now
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    from spacy.cli import download
+    download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
 
-# === Ensure required NLTK resources ===
+
+# === Setup ===
+# Use spaCy's small English model (make sure to install it!)
+nlp = spacy.load("en_core_web_sm")
+
+# Just for stopword removal
+import nltk
 nltk.download('stopwords', quiet=True)
-nltk.download('wordnet', quiet=True)
-nltk.download('averaged_perceptron_tagger', quiet=True)
-nltk.download('averaged_perceptron_tagger_en', quiet=True)  # ✅ NEW!
-
 stop_words = set(stopwords.words('english'))
-lemmatizer = WordNetLemmatizer()
 
-
-def wn_tagger(nltk_tag):
-    if nltk_tag.startswith('J'):
-        return wordnet.ADJ
-    elif nltk_tag.startswith('V'):
-        return wordnet.VERB
-    elif nltk_tag.startswith('N'):
-        return wordnet.NOUN
-    elif nltk_tag.startswith('R'):
-        return wordnet.ADV
-    else:
-        return wordnet.NOUN
-
-
+# === Preprocessing ===
 def preprocess_text(text):
-    # Tokenize using regex instead of word_tokenize (no punkt needed!)
+    # Tokenize using regex first to clean input
     tokens = re.findall(r'\b\w+\b', re.sub(r'[-]', ' ', text))
+    filtered = [word.lower() for word in tokens if word.lower() not in stop_words]
+    
+    # Feed filtered text into spaCy
+    doc = nlp(" ".join(filtered))
 
-    filtered_tokens = [word.lower() for word in tokens if word.lower() not in stop_words]
-    pos_tags = pos_tag(filtered_tokens)
-    lemmatized = [lemmatizer.lemmatize(word, wn_tagger(tag)) for word, tag in pos_tags]
+    # Lemmatize using POS from spaCy
+    lemmatized = [token.lemma_ for token in doc if not token.is_punct and not token.is_space]
     return ' '.join(lemmatized)
