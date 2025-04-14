@@ -3,16 +3,13 @@ import re
 from nltk import pos_tag
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.tokenize import word_tokenize
 
 # === Ensure required NLTK resources ===
 nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
 nltk.download('averaged_perceptron_tagger', quiet=True)
 nltk.download('wordnet', quiet=True)
-
-# === Force init: tokenize dummy sentence to warm up punkt ===
-_ = sent_tokenize("NLTK init test.")
 
 # === Init tools ===
 stop_words = set(stopwords.words('english'))
@@ -30,6 +27,7 @@ def wn_tagger(nltk_tag):
         return wordnet.ADV
     else:
         return wordnet.NOUN
+
 
 def preprocess_text(text):
     tokens = word_tokenize(re.sub(r'[-]', ' ', text))
