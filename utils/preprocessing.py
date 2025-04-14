@@ -8,8 +8,9 @@ from nltk.stem import WordNetLemmatizer
 
 # === Ensure required NLTK resources ===
 nltk.download('stopwords', quiet=True)
-nltk.download('averaged_perceptron_tagger', quiet=True)
 nltk.download('wordnet', quiet=True)
+nltk.download('averaged_perceptron_tagger', quiet=True)
+nltk.download('averaged_perceptron_tagger_en', quiet=True)  # ✅ NEW!
 
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
